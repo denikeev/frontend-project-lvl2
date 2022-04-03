@@ -1,30 +1,23 @@
-import { cwd } from 'process';
+import { getFixturePath, readFile, __dirname } from '../src/test-helpers.js';
 import getJsonFromFile from '../src/getJsonFromFile.js';
 
-const file1 = {
-  host: 'hexlet.io',
-  timeout: 50,
-  proxy: '123.234.53.22',
-  follow: false,
-};
+const expectedFile = JSON.parse(readFile('expected_file.json'));
+const file1Path = getFixturePath('file1.json');
+const nonExistentFile = getFixturePath('nonExistentFile.json');
+const otherExtension = getFixturePath('test_extension.txt');
 
-describe('paths option', () => {
-  test('absolute path', () => {
-    expect(getJsonFromFile(`${cwd()}/__tests__/files/file1.json`)).toEqual(file1);
-  });
-  test('relative path', () => {
-    expect(getJsonFromFile('__tests__/files/file1.json')).toEqual(file1);
-  });
+test('getJsonFromFile', () => {
+  expect(getJsonFromFile(file1Path)).toEqual(expectedFile);
 });
 
 describe('to be null', () => {
   test('exists', () => {
-    expect(getJsonFromFile(`${cwd()}/__tests__/nothing.json`)).toBeNull();
+    expect(getJsonFromFile(nonExistentFile)).toBeNull();
   });
   test('extension', () => {
-    expect(getJsonFromFile(`${cwd()}README.md`)).toBeNull();
+    expect(getJsonFromFile(otherExtension)).toBeNull();
   });
   test('lstat', () => {
-    expect(getJsonFromFile('__tests__')).toBeNull();
+    expect(getJsonFromFile(__dirname)).toBeNull();
   });
 });

@@ -1,3 +1,4 @@
+import { getFixturePath } from '../src/test-helpers.js';
 import genDiff from '../src/genDiff.js';
 
 const result = `{
@@ -9,9 +10,9 @@ const result = `{
   + verbose: true
 }`;
 
-const filepath1 = '__tests__/files/file1.json';
-const filepath2 = '__tests__/files/file2.json';
+const file1Path = getFixturePath('file1.json');
+const file2Path = getFixturePath('file2.json');
 
 test('genDiff', () => {
-  expect(genDiff(filepath1, filepath2)).toEqual(result);
+  expect(genDiff(file1Path, file2Path)).toEqual(result);
 });

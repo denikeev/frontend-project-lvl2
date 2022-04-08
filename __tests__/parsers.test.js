@@ -1,16 +1,31 @@
-import { getFixturePath, readFile } from '../src/test-helpers.js';
-import getJson from '../src/parsers.js';
+import getJson, {
+  getFixturePath, readFile, __dirname, getPath,
+} from '../src/parsers.js';
 
-const jsonFile = JSON.parse(readFile('file1.json'));
-const file1Path = getFixturePath('file1.json');
-const file2Path = getFixturePath('file1.yml');
-const file3Path = getFixturePath('test_extension.txt');
-
-test('getJson', () => {
-  expect(getJson(file1Path)).toEqual(jsonFile);
-  expect(getJson(file2Path)).toEqual(jsonFile);
+describe('getJson', () => {
+  const jsonFile = JSON.parse(readFile('file1.json'));
+  const jsonPath = getFixturePath('file1.json');
+  const ymlPath = getFixturePath('file1.yml');
+  const txtPath = getFixturePath('test_extension.txt');
+  test('main', () => {
+    expect(getJson(jsonPath)).toEqual(jsonFile);
+    expect(getJson(ymlPath)).toEqual(jsonFile);
+  });
+  test('extension', () => {
+    expect(getJson(txtPath)).toBeNull();
+  });
 });
 
-test('extension', () => {
-  expect(getJson(file3Path)).toBeNull();
+describe('getPath', () => {
+  const file1Path = getFixturePath('file1.json');
+  const nonExistentFile = getFixturePath('nonExistentFile.json');
+  test('main', () => {
+    expect(getPath(file1Path)).toEqual(file1Path);
+  });
+  test('exists', () => {
+    expect(getPath(nonExistentFile)).toBeNull();
+  });
+  test('lstat', () => {
+    expect(getPath(__dirname)).toBeNull();
+  });
 });

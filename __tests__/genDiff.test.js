@@ -1,9 +1,16 @@
 import { getFixturePath, readFile } from '../src/parsers.js';
 import genDiff from '../src/genDiff.js';
 
-test('genDiff', () => {
-  const result = readFile('../__fixtures__/result.txt');
+test('genDiff default', () => {
+  const result = readFile('../__fixtures__/formaters/stylish-result.txt');
   const file1Path = getFixturePath('file1.json');
   const file2Path = getFixturePath('file2.json');
   expect(genDiff(file1Path, file2Path)).toEqual(result);
+});
+
+test('genDiff plain', () => {
+  const result = readFile('../__fixtures__/formaters/plain-result.txt');
+  const file1Path = getFixturePath('file1.json');
+  const file2Path = getFixturePath('file2.json');
+  expect(genDiff(file1Path, file2Path, 'plain')).toEqual(result);
 });

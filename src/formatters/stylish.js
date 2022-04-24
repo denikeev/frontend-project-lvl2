@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const stylish = (data) => {
-  const cloneData = _.cloneDeep(data);
+  const clonedData = _.cloneDeep(data);
   const status = (obj) => {
     if (obj.type === 'added') return '+ ';
     if (obj.type === 'deleted') return '- ';
@@ -17,7 +17,7 @@ const stylish = (data) => {
     if (!_.isObject(currentData)) {
       return `${currentData}`;
     }
-    if (currentData.type === 'internal' && currentData.keyName === '/') {
+    if (currentData.type === 'tree') {
       const children = currentData.children.map((child) => iter(child));
       return [
         '{',
@@ -29,8 +29,8 @@ const stylish = (data) => {
       return currentData.children.map((child) => iter(child, depth)).join('\n');
     }
     if (currentData.type !== 'internal') {
-      if (currentData.keyName) {
-        return `${statusIndent}${status(currentData)}${currentData.keyName}: ${iter(currentData.value, depth + 2)}`;
+      if (currentData.type) {
+        return `${statusIndent}${status(currentData)}${currentData.key}: ${iter(currentData.value, depth + 2)}`;
       }
       const nestedData = Object.entries(currentData).map(([key, val]) => `${nestedIndent}${key}: ${iter(val, depth + 2)}`);
       return [
@@ -40,10 +40,10 @@ const stylish = (data) => {
       ].join('\n');
     }
     const internalChildren = currentData.children.map((child) => iter(child, depth + 2)).join('\n');
-    return `${statusIndent}${status(currentData)}${currentData.keyName}: {\n${internalChildren}\n${nestedIndent}}`;
+    return `${statusIndent}${status(currentData)}${currentData.key}: {\n${internalChildren}\n${nestedIndent}}`;
   };
 
-  return iter(cloneData);
+  return iter(clonedData);
 };
 
 export default stylish;

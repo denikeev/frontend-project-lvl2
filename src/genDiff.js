@@ -18,18 +18,18 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
       const isObjects = () => _.isObject(value1) && _.isObject(value2);
       const isDifferent = () => value1 !== value2;
 
-      if (isDeleted()) return { keyName: key, value: value1, type: 'deleted' };
-      if (isAdded()) return { keyName: key, value: value2, type: 'added' };
-      if (isObjects()) return { keyName: key, type: 'internal', children: compareObjects(value1, value2) };
-      if (isDifferent()) return { type: 'updated', children: [{ keyName: key, value: value1, type: 'deleted' }, { keyName: key, value: value2, type: 'added' }] };
-      return { keyName: key, value: value1 };
+      if (isDeleted()) return { key, value: value1, type: 'deleted' };
+      if (isAdded()) return { key, value: value2, type: 'added' };
+      if (isObjects()) return { key, type: 'internal', children: compareObjects(value1, value2) };
+      if (isDifferent()) return { type: 'updated', children: [{ key, value: value1, type: 'deleted' }, { key, value: value2, type: 'added' }] };
+      return { key, value: value1, type: 'equal' };
     });
 
     return tree;
   };
 
   const innerTree = compareObjects(json1, json2);
-  const tree = { keyName: '/', type: 'internal', children: innerTree };
+  const tree = { type: 'tree', children: innerTree };
   return chooseFormatter(tree, formatName);
 };
 

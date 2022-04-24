@@ -14,3 +14,10 @@ test('genDiff plain', () => {
   const file2Path = getFixturePath('file2.json');
   expect(genDiff(file1Path, file2Path, 'plain')).toEqual(result);
 });
+
+test('genDiff json', () => {
+  const result = readFile('../__fixtures__/formaters/json-result.txt');
+  const file1Path = getFixturePath('file1.json');
+  const file2Path = getFixturePath('file2.json');
+  expect(genDiff(file1Path, file2Path, 'json')).toEqual(result);
+});

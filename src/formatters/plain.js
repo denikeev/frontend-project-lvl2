@@ -8,7 +8,7 @@ const filterType = (data) => {
       }
       return child;
     })
-    .filter((child) => child.type);
+    .filter((child) => child.type && child.type !== 'equal');
   return { ...data, children };
 };
 
@@ -23,25 +23,25 @@ const formatValue = (val) => {
 const getObjectQuery = (objectQuery, addKey = '') => `${objectQuery}${addKey}`.substring(1);
 
 const plain = (data) => {
-  const cloneData = _.cloneDeep(data);
-  const filteredTree = filterType(cloneData);
+  const clonedData = _.cloneDeep(data);
+  const filteredTree = filterType(clonedData);
 
   const iter = (currentData, objectName = '') => {
     if (!_.isObject(currentData)) {
       return `${currentData}`;
     }
-    if (currentData.type === 'internal' && currentData.keyName === '/') {
+    if (currentData.type === 'tree') {
       const children = currentData.children.map((child) => iter(child)).join('\n');
       return children;
     }
-    const objectQuery = `${objectName}.${currentData.keyName ?? ''}`;
+    const objectQuery = `${objectName}.${currentData.key ?? ''}`;
     switch (currentData.type) {
       case 'updated': {
         const [deletedData] = currentData.children;
         const [, addedData] = currentData.children;
         const deletedValue = formatValue(deletedData.value);
         const addedValue = formatValue(addedData.value);
-        return `Property '${getObjectQuery(objectQuery, deletedData.keyName)}' was updated. From ${deletedValue} to ${addedValue}`;
+        return `Property '${getObjectQuery(objectQuery, deletedData.key)}' was updated. From ${deletedValue} to ${addedValue}`;
       }
       case 'added':
         return `Property '${getObjectQuery(objectQuery)}' was added with value: ${formatValue(currentData.value)}`;

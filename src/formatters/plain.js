@@ -8,7 +8,7 @@ const filterType = (data) => {
       }
       return child;
     })
-    .filter((child) => child.type && child.type !== 'equal');
+    .filter((child) => child.type && child.type !== 'unchanged');
   return { ...data, children };
 };
 
@@ -27,6 +27,7 @@ const plain = (data) => {
   const filteredTree = filterType(clonedData);
 
   const iter = (currentData, objectName = '') => {
+    const objectQuery = `${objectName}.${currentData.key ?? ''}`;
     if (!_.isObject(currentData)) {
       return `${currentData}`;
     }
@@ -34,24 +35,21 @@ const plain = (data) => {
       const children = currentData.children.map((child) => iter(child)).join('\n');
       return children;
     }
-    const objectQuery = `${objectName}.${currentData.key ?? ''}`;
-    switch (currentData.type) {
-      case 'updated': {
-        const [deletedData] = currentData.children;
-        const [, addedData] = currentData.children;
-        const deletedValue = formatValue(deletedData.value);
-        const addedValue = formatValue(addedData.value);
-        return `Property '${getObjectQuery(objectQuery, deletedData.key)}' was updated. From ${deletedValue} to ${addedValue}`;
-      }
-      case 'added':
-        return `Property '${getObjectQuery(objectQuery)}' was added with value: ${formatValue(currentData.value)}`;
-      case 'deleted':
-        return `Property '${getObjectQuery(objectQuery)}' was removed`;
-      default: {
-        const internalChildren = currentData.children.map((child) => iter(child, objectQuery)).join('\n');
-        return internalChildren;
-      }
+    if (currentData.type === 'updated') {
+      const [deletedData] = currentData.children;
+      const [, addedData] = currentData.children;
+      const deletedValue = formatValue(deletedData.value);
+      const addedValue = formatValue(addedData.value);
+      return `Property '${getObjectQuery(objectQuery, deletedData.key)}' was updated. From ${deletedValue} to ${addedValue}`;
     }
+    if (currentData.type === 'added') {
+      return `Property '${getObjectQuery(objectQuery)}' was added with value: ${formatValue(currentData.value)}`;
+    }
+    if (currentData.type === 'deleted') {
+      return `Property '${getObjectQuery(objectQuery)}' was removed`;
+    }
+    const internalChildren = currentData.children.map((child) => iter(child, objectQuery)).join('\n');
+    return internalChildren;
   };
 
   return iter(filteredTree);

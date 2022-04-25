@@ -22,7 +22,7 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
       if (isAdded()) return { key, value: value2, type: 'added' };
       if (isObjects()) return { key, type: 'internal', children: compareObjects(value1, value2) };
       if (isDifferent()) return { type: 'updated', children: [{ key, value: value1, type: 'deleted' }, { key, value: value2, type: 'added' }] };
-      return { key, value: value1, type: 'equal' };
+      return { key, value: value1, type: 'unchanged' };
     });
 
     return tree;

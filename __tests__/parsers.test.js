@@ -1,5 +1,5 @@
 import getJson, {
-  getFixturePath, readFile, __dirname, getPath,
+  getFixturePath, readFile, processPath,
 } from '../src/parsers.js';
 
 describe('getJson', () => {
@@ -16,16 +16,9 @@ describe('getJson', () => {
   });
 });
 
-describe('getPath', () => {
+describe('processPath', () => {
   const file1Path = getFixturePath('file1.json');
-  const nonExistentFile = getFixturePath('nonExistentFile.json');
   test('main', () => {
-    expect(getPath(file1Path)).toEqual(file1Path);
-  });
-  test('exists', () => {
-    expect(getPath(nonExistentFile)).toBeNull();
-  });
-  test('lstat', () => {
-    expect(getPath(__dirname)).toBeNull();
+    expect(processPath(file1Path)).toEqual(file1Path);
   });
 });

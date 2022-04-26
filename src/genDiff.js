@@ -13,8 +13,8 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
     const tree = sortedKeys.flatMap((key) => {
       const value1 = obj1[key];
       const value2 = obj2[key];
-      const isDeleted = () => Object.hasOwn(obj1, key) && !Object.hasOwn(obj2, key);
-      const isAdded = () => !Object.hasOwn(obj1, key) && Object.hasOwn(obj2, key);
+      const isDeleted = () => _.has(obj1, key) && !_.has(obj2, key);
+      const isAdded = () => !_.has(obj1, key) && _.has(obj2, key);
       const isObjects = () => _.isObject(value1) && _.isObject(value2);
       const isDifferent = () => value1 !== value2;
 

@@ -1,4 +1,4 @@
-import { getFixturePath, readFile } from '../src/parsers.js';
+import { getFixturePath, readFile } from '../src/fixtureFs.js';
 import genDiff from '../src/genDiff.js';
 
 test('genDiff main flow', () => {

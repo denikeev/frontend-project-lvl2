@@ -1,36 +1,24 @@
-import _ from 'lodash';
-import getJson from './parsers.js';
+import path from 'path';
+import checkAndReadFile from './checkAndReadFile.js';
+import parse from './parsers.js';
+import compareObjects from './compareObjects.js';
 import chooseFormatter from './formatters/index.js';
 
+const getData = (filepath) => {
+  const file = checkAndReadFile(filepath);
+  const format = path.extname(filepath);
+  const data = parse(format, file);
+
+  return data;
+};
+
 const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
-  const json1 = getJson(filepath1);
-  const json2 = getJson(filepath2);
+  const data1 = getData(filepath1);
+  const data2 = getData(filepath2);
+  const diff = compareObjects(data1, data2);
+  const formatedData = chooseFormatter(diff, formatName);
 
-  const compareObjects = (obj1, obj2) => {
-    const commonKeys = _.union(Object.keys(obj1), Object.keys(obj2));
-    const sortedKeys = _.sortBy(commonKeys);
-
-    const tree = sortedKeys.flatMap((key) => {
-      const value1 = obj1[key];
-      const value2 = obj2[key];
-      const isDeleted = () => _.has(obj1, key) && !_.has(obj2, key);
-      const isAdded = () => !_.has(obj1, key) && _.has(obj2, key);
-      const isObjects = () => _.isObject(value1) && _.isObject(value2);
-      const isDifferent = () => value1 !== value2;
-
-      if (isDeleted()) return { key, value: value1, type: 'deleted' };
-      if (isAdded()) return { key, value: value2, type: 'added' };
-      if (isObjects()) return { key, type: 'internal', children: compareObjects(value1, value2) };
-      if (isDifferent()) return { type: 'updated', children: [{ key, value: value1, type: 'deleted' }, { key, value: value2, type: 'added' }] };
-      return { key, value: value1, type: 'unchanged' };
-    });
-
-    return tree;
-  };
-
-  const innerTree = compareObjects(json1, json2);
-  const tree = { type: 'tree', children: innerTree };
-  return chooseFormatter(tree, formatName);
+  return formatedData;
 };
 
 export default genDiff;

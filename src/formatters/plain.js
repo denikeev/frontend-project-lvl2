@@ -8,11 +8,11 @@ const formatValue = (val) => {
   return val;
 };
 
-const getObjectQuery = (objectQuery, addKey = '') => `${objectQuery}${addKey}`.substring(1);
+const getObjectQuery = (coll) => coll.join('.');
 
 const plain = (data) => {
-  const iter = (currentData, objectName = '') => {
-    const objectQuery = `${objectName}.${currentData.key ?? ''}`;
+  const iter = (currentData, objectName = []) => {
+    const objectQuery = _.flatten([objectName, currentData.key]);
     switch (currentData.type) {
       case 'internal': {
         const children = currentData.children.flatMap((child) => iter(child, objectQuery)).join('\n');

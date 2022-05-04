@@ -9,12 +9,13 @@ const compareObjects = (obj1, obj2) => {
     const value2 = obj2[key];
     const isDeleted = () => _.has(obj1, key) && !_.has(obj2, key);
     const isAdded = () => !_.has(obj1, key) && _.has(obj2, key);
-    const isObjects = () => _.isObject(value1) && _.isObject(value2);
+    const isPlainObject = () => (_.isObject(value1) && _.isObject(value2))
+    && !(Array.isArray(value1) && Array.isArray(value2));
     const isDifferent = () => value1 !== value2;
 
     if (isDeleted()) return { key, value: value1, type: 'deleted' };
     if (isAdded()) return { key, value: value2, type: 'added' };
-    if (isObjects()) return { key, type: 'internal', children: compareObjects(value1, value2) };
+    if (isPlainObject()) return { key, type: 'internal', children: compareObjects(value1, value2) };
     if (isDifferent()) {
       return {
         key, type: 'updated', oldValue: value1, newValue: value2,

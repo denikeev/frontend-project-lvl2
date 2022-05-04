@@ -1,12 +1,12 @@
 import path from 'path';
-import checkAndReadFile from './checkAndReadFile.js';
+import readFile from './readFile.js';
 import parse from './parsers.js';
 import compareObjects from './compareObjects.js';
 import chooseFormatter from './formatters/index.js';
 
 const getData = (filepath) => {
-  const file = checkAndReadFile(filepath);
-  const format = path.extname(filepath);
+  const file = readFile(filepath);
+  const format = path.extname(filepath).substring(1);
   const data = parse(format, file);
 
   return data;

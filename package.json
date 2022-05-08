@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.5.2",
   "type": "module",
-  "description": "[![Actions Status](https://github.com/denikeev/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/denikeev/frontend-project-lvl2/actions)",
+  "description": "Difference generator is a cli program that determines the difference between two data structures.",
   "bin": {
     "gendiff": "bin/genDiff.js"
   },
